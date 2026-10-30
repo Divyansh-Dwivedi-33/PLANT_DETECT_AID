@@ -1,0 +1,16 @@
+# PlantX Detector - Plant Disease Detector
+# Use Python 3.8 or 3.9 (TensorFlow 2.7.0 does not support 3.10+)
+
+# ---- Requested core versions ----
+matplotlib==3.5.1
+numpy==1.21.5
+tensorflow==2.7.0
+tensorflow-addons==0.14.0
+Flask==2.1.3
+
+# ---- Supporting packages (pinned to stay compatible with the above) ----
+Werkzeug==2.1.2
+protobuf==3.20.3
+opencv-python-headless==4.5.5.64
+scikit-learn==1.0.2
+Pillow==9.5.0

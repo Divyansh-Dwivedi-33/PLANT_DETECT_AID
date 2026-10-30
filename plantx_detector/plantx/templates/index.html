@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlantX Detector – Plant Disease Detector</title>
+  <meta name="description" content="PlantX Detector: upload a leaf photo and get an instant AI plant disease diagnosis.">
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#top">
+    <img src="{{ url_for('static', filename='img/favicon.svg') }}" alt="" width="34" height="34">
+    <span>PlantX <b>Detector</b></span>
+  </a>
+  <nav>
+    <a href="#detect">Detect</a>
+    <a href="#how">How it works</a>
+    <a href="#plants">Plants</a>
+    <a href="#diseases">Disease guide</a>
+  </nav>
+  <span id="modelStatus" class="status status--wait" title="Checking model…">
+    <i></i><em>Checking…</em>
+  </span>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero__leaves" aria-hidden="true">
+    <img class="fl fl1" src="{{ url_for('static', filename='img/monstera.svg') }}" alt="">
+    <img class="fl fl2" src="{{ url_for('static', filename='img/fern.svg') }}" alt="">
+    <img class="fl fl3" src="{{ url_for('static', filename='img/ginkgo.svg') }}" alt="">
+    <img class="fl fl4" src="{{ url_for('static', filename='img/palm.svg') }}" alt="">
+    <img class="fl fl5" src="{{ url_for('static', filename='img/maple.svg') }}" alt="">
+    <img class="fl fl6" src="{{ url_for('static', filename='img/bamboo.svg') }}" alt="">
+  </div>
+  <div class="hero__inner">
+    <p class="eyebrow">AI-powered plant health</p>
+    <h1>PlantX <span>Detector</span></h1>
+    <p class="lead">A Swin-Transformer plant disease detector. Snap a photo of a leaf,
+      upload it, and get a diagnosis with care advice in seconds.</p>
+    <div class="hero__cta">
+      <a class="btn btn--light" href="#detect">Scan a leaf</a>
+      <a class="btn btn--ghost" href="#how">How it works</a>
+    </div>
+    <ul class="stats">
+      <li><b>4</b><span>cotton leaf classes</span></li>
+      <li><b>Swin</b><span>transformer model</span></li>
+      <li><b>&lt; 1s</b><span>typical analysis</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ DETECTOR ============ -->
+<section class="section" id="detect">
+  <div class="wrap">
+    <h2>Scan a leaf</h2>
+    <p class="sub">Use a clear, well-lit photo with a single leaf filling most of the frame.</p>
+
+    <div class="grid2">
+      <!-- upload card -->
+      <div class="card">
+        <div id="drop" class="drop" tabindex="0" role="button" aria-label="Choose or drop a leaf image">
+          <img id="preview" class="drop__preview" alt="Selected leaf" hidden>
+          <div id="dropHint" class="drop__hint">
+            <img src="{{ url_for('static', filename='img/leaf.svg') }}" alt="" width="84" height="84">
+            <p><b>Drag &amp; drop</b> a leaf photo here<br>or <u>browse your files</u></p>
+            <small>JPG, PNG, BMP or WEBP · up to 8&nbsp;MB</small>
+          </div>
+          <input id="file" type="file" accept="image/png,image/jpeg,image/bmp,image/webp" hidden>
+        </div>
+        <div class="actions">
+          <button id="analyze" class="btn btn--solid" disabled>
+            <span class="spin" hidden></span><span class="lbl">Analyse leaf</span>
+          </button>
+          <button id="reset" class="btn btn--line" type="button" disabled>Clear</button>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </div>
+
+      <!-- result card -->
+      <div class="card result" id="result" aria-live="polite">
+        <div id="empty" class="result__empty">
+          <img src="{{ url_for('static', filename='img/cotton.svg') }}" alt="" width="120" height="120">
+          <h3>Your diagnosis will appear here</h3>
+          <p>Upload a leaf photo and press <b>Analyse leaf</b>.</p>
+        </div>
+
+        <div id="out" hidden>
+          <div class="verdict" id="verdict">
+            <div class="ring" id="ring"><span id="confVal">0%</span></div>
+            <div>
+              <span class="pill" id="pill">Result</span>
+              <h3 id="rTitle">—</h3>
+              <p id="rSummary" class="muted"></p>
+            </div>
+          </div>
+          <p id="lowConf" class="warn" hidden>
+            Confidence is low. Try a closer, sharper photo of one leaf in good light.
+          </p>
+
+          <h4>Model confidence</h4>
+          <div id="bars" class="bars"></div>
+
+          <div class="cols">
+            <div><h4>What to look for</h4><ul id="rSymptoms" class="list"></ul></div>
+            <div><h4>Recommended actions</h4><ul id="rActions" class="list"></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="section section--tint" id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><span>1</span><h3>Upload</h3><p>Choose a leaf photo from your phone or computer.</p></div>
+      <div class="step"><span>2</span><h3>Analyse</h3><p>The image is resized to 64×64 and passed through a Swin-style transformer with shifted-window attention.</p></div>
+      <div class="step"><span>3</span><h3>Act</h3><p>See the predicted condition, confidence per class, symptoms and treatment tips.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLANT VARIETIES ============ -->
+<section class="section" id="plants">
+  <div class="wrap">
+    <h2>A world of leaves</h2>
+    <p class="sub">The current model is trained on cotton. More crops can be added by retraining with new datasets.</p>
+    <div class="gallery">
+      {% set plants = [
+        ('cotton','Cotton','Active model'),
+        ('monstera','Monstera',''),
+        ('fern','Fern',''),
+        ('maple','Maple',''),
+        ('ginkgo','Ginkgo',''),
+        ('palm','Palm',''),
+        ('bamboo','Bamboo',''),
+        ('eucalyptus','Eucalyptus','')
+      ] %}
+      {% for file, name, tag in plants %}
+      <figure class="plant {% if tag %}plant--on{% endif %}">
+        <img src="{{ url_for('static', filename='img/' ~ file ~ '.svg') }}" alt="{{ name }} leaf illustration" loading="lazy">
+        <figcaption>{{ name }}{% if tag %}<em>{{ tag }}</em>{% else %}<em class="soon">Coming soon</em>{% endif %}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISEASE GUIDE ============ -->
+<section class="section section--tint" id="diseases">
+  <div class="wrap">
+    <h2>Cotton disease guide</h2>
+    <div class="dgrid">
+      {% for key, d in diseases.items() %}
+      <article class="dcard dcard--{{ d.status }}">
+        <span class="pill pill--{{ d.status }}">{{ 'Healthy' if d.status == 'healthy' else 'Disease' }}</span>
+        <h3>{{ d.title }}</h3>
+        <p>{{ d.summary }}</p>
+        <ul>
+          {% for s in d.symptoms %}<li>{{ s }}</li>{% endfor %}
+        </ul>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <img src="{{ url_for('static', filename='img/favicon.svg') }}" alt="" width="28" height="28">
+  <p><b>PlantX Detector</b> · Plant Disease Detector<br>
+  <small>Results are AI estimates and not a substitute for an agronomist's advice.</small></p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
