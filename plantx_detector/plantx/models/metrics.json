@@ -1,0 +1,75 @@
+{
+  "accuracy": 96.61,
+  "total_classes": 9,
+  "val_samples": 678,
+  "train_samples": 2716,
+  "report": {
+    "bacterial_blight": {
+      "precision": 0.9326923076923077,
+      "recall": 0.9897959183673469,
+      "f1-score": 0.9603960396039604,
+      "support": 98.0
+    },
+    "curl_virus": {
+      "precision": 0.9866666666666667,
+      "recall": 0.961038961038961,
+      "f1-score": 0.9736842105263158,
+      "support": 77.0
+    },
+    "fussarium_wilt": {
+      "precision": 1.0,
+      "recall": 0.9714285714285714,
+      "f1-score": 0.9855072463768116,
+      "support": 70.0
+    },
+    "verticillium_wilt": {
+      "precision": 0.96,
+      "recall": 0.9411764705882353,
+      "f1-score": 0.9504950495049505,
+      "support": 51.0
+    },
+    "alternaria_leaf_spot": {
+      "precision": 0.975609756097561,
+      "recall": 0.975609756097561,
+      "f1-score": 0.975609756097561,
+      "support": 41.0
+    },
+    "leaf_reddening": {
+      "precision": 0.9642857142857143,
+      "recall": 0.9473684210526315,
+      "f1-score": 0.9557522123893806,
+      "support": 114.0
+    },
+    "jassid_hopper_damage": {
+      "precision": 0.9,
+      "recall": 0.8653846153846154,
+      "f1-score": 0.8823529411764706,
+      "support": 52.0
+    },
+    "herbicide_damage": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 67.0
+    },
+    "healthy": {
+      "precision": 0.972972972972973,
+      "recall": 1.0,
+      "f1-score": 0.9863013698630136,
+      "support": 108.0
+    },
+    "accuracy": 0.9660766961651918,
+    "macro avg": {
+      "precision": 0.9658030464128026,
+      "recall": 0.9613114126619914,
+      "f1-score": 0.9633443139487182,
+      "support": 678.0
+    },
+    "weighted avg": {
+      "precision": 0.9662932625322005,
+      "recall": 0.9660766961651918,
+      "f1-score": 0.965946761005332,
+      "support": 678.0
+    }
+  }
+}

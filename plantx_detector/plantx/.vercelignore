@@ -1,0 +1,8 @@
+.git
+__pycache__
+*.pyc
+.ipynb_checkpoints
+PlantX_Detector_Swin_Transformer.ipynb
+*.pt
+*.pth
+*.weights.h5
